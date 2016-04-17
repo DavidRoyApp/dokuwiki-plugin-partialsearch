@@ -1,0 +1,8 @@
+# General Plugin Info do not edit
+base   partialsearch
+author David Roy
+email  davidroyapp@gmail.com
+date   2016-04-16
+name   Partial Search Plugin
+desc   Enables partial search by surrounding each word with '*'
+url    http://www.dokuwiki.org/plugin:partialsearch
