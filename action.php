@@ -7,6 +7,8 @@
 
 if(!defined('DOKU_INC')) die();
 
+require_once DOKU_INC.'inc/fulltext.php';
+
 class action_plugin_partialsearch extends DokuWiki_Action_Plugin {
 
     function register(Doku_Event_Handler $controller) {
@@ -22,6 +24,18 @@ class action_plugin_partialsearch extends DokuWiki_Action_Plugin {
 
     function partial_search_after(&$event, $args) {
         $this->_partial_search($event, $args, '');
+		
+		$data= array();
+		$data['id']= $event->data['query'];
+		$data['in_ns']= true;
+		$data['in_title']= true;
+		$data['has_titles']= true;
+		$pageLookup= _ft_pageLookup($data);
+		foreach($pageLookup as $key=>$value){
+			if (!isset($event->result[$key])){
+				$event->result[$key]=0;
+			}
+		}
     }
 
     function _partial_search(&$event, $args, $surrounding='') {
