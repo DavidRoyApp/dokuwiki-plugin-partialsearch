@@ -8,6 +8,7 @@
 if(!defined('DOKU_INC')) die();
 
 require_once DOKU_INC.'inc/fulltext.php';
+require_once DOKU_INC.'inc/utf8.php';
 
 class action_plugin_partialsearch extends DokuWiki_Action_Plugin {
 
@@ -15,7 +16,7 @@ class action_plugin_partialsearch extends DokuWiki_Action_Plugin {
         $controller->register_hook('SEARCH_QUERY_FULLPAGE', 'BEFORE', $this, 'partial_search_before');
         $controller->register_hook('SEARCH_QUERY_FULLPAGE', 'AFTER', $this, 'partial_search_after');
         $controller->register_hook('SEARCH_QUERY_PAGELOOKUP', 'BEFORE', $this, 'disable_search_lookup');
-        $controller->register_hook('FULLTEXT_SNIPPET_CREATE', 'AFTER',  $this, 'add_title_results');
+        $controller->register_hook('FULLTEXT_SNIPPET_CREATE', 'AFTER',  $this, 'snippet_create_after');
     }
 
     function partial_search_before(&$event, $args) {
@@ -33,7 +34,7 @@ class action_plugin_partialsearch extends DokuWiki_Action_Plugin {
 		$pageLookup= _ft_pageLookup($data);
 		foreach($pageLookup as $key=>$value){
 			if (!isset($event->result[$key])){
-				$event->result[$key]=0;
+				$event->result[$key]='El título tiene'; //if assign 0 then it won't generate snippet
 			}
 		}
     }
@@ -57,15 +58,22 @@ class action_plugin_partialsearch extends DokuWiki_Action_Plugin {
         }
     }
 
-    function add_title_results(&$event, $args) {
+    function snippet_create_after(&$event, $args) {
         global $conf;
 
+		//$id, $text, $highlight, $snippet
+		extract($event->data, EXTR_REFS);
+		
         if ($this->getConf('addtitletosnippet')) {
-            $title = p_get_first_heading($event->data['id']);
+            $title = p_get_first_heading($id);
             if (isset($title) && trim($title)!==''){
-                $event->data['snippet'] = $title . '<br/>' . $event->data['snippet'];
+                $snippet = $title . '<br/>' . $snippet;
             }
         }
+		
+		if (!isset($snippet) || trim($snippet)==='') {
+			$snippet = utf8_substr($text, 0, 250);
+		} 		
     }
 
 }
