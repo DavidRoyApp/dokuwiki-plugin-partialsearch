@@ -51,9 +51,10 @@ class renderer_plugin_partialsearch extends Doku_Renderer_xhtml {
         global $conf;
 
         if ($this->getConf('userawreturns')) {
-            $text= strtr($text, DOKU_LF, DOKU_LF.DOKU_LF);
+            $this->doc .= str_replace(DOKU_LF,"<br />".DOKU_LF,$this->_xmlEntities($text));
+        } else {
+            parent::cdata($text);
         }
-        parent::cdata($text);
     }
 
     function _replaceChars($text) {
