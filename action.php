@@ -78,7 +78,7 @@ class action_plugin_partialsearch extends DokuWiki_Action_Plugin {
             }
         }
 
-        if ($this->getConf('enablesearchlookupsnippet') && (!isset($snippet) || trim($snippet)==='') {
+        if ($this->getConf('enablesearchlookupsnippet') && (!isset($snippet) || trim($snippet)==='')) {
             $snippet = utf8_substr($text, 0, 250);
         } 		
     }
