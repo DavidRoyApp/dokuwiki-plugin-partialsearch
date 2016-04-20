@@ -51,7 +51,7 @@ class renderer_plugin_partialsearch extends Doku_Renderer_xhtml {
         global $conf;
 
         if ($this->getConf('userawreturns')) {
-            $text= strtr(DOKU_LF, DOKU_LF.DOKU_LF, $text);
+            $text= strtr($text, DOKU_LF, DOKU_LF.DOKU_LF);
         }
         parent::cdata($text);
     }
