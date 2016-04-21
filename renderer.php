@@ -37,7 +37,12 @@ class renderer_plugin_partialsearch extends Doku_Renderer_xhtml {
         $title= parent::_getLinkTitle($title, $default, $isImage, $id, $linktype);
 
         if ($this->getConf('replaceunderscores') && $id) {
-            return $this->_replaceChars(getNS($id)) . ' ' . $title;
+            $ns= $this->_replaceChars(getNS($id));
+            if (isset($ns) && $ns !== ''){
+                return '[' . ucwords($ns) . '] ' . ucfirst($title);
+            }else{
+                return ucfirst($title);
+            }
         }else{
             return $title;
         }
