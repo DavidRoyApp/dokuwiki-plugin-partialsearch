@@ -40,7 +40,9 @@ class action_plugin_partialsearch extends DokuWiki_Action_Plugin {
             $data['id']= $event->data['query'];
             $data['in_ns']= true;
             $data['in_title']= true;
-            $data['has_titles']= true;
+            $data['after']= null;
+            $data['before']= null;
+            $data['has_titles']= true; // for plugin backward compatibility check
             $pageLookup= _ft_pageLookup($data);
             foreach($pageLookup as $key=>$value){
                 if (!isset($event->result[$key])){
@@ -59,9 +61,10 @@ class action_plugin_partialsearch extends DokuWiki_Action_Plugin {
     function pagelookup_before(&$event, $args) {
         global $conf;
 
-        if ($this->getConf('enablesearchlookupsnippet')){
+        if ($this->getConf('enablesearchlookupsnippet') && $event->canPreventDefault){
             $event->stopPropagation();
             $event->preventDefault();
+            $event->result=[]; // Empty page lookup result because they've been included in QUERY_FULLPAGE
         }
     }
 
